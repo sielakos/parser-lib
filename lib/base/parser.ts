@@ -29,7 +29,7 @@ export function createParser<T, R>(parseFn: ParseFn<T, R>): Parser<T, R> {
 }
 
 class FunctionParser<T, R> extends Parser<T, R> {
-  public parseFn: ParseFn<T, R>
+  private parseFn: ParseFn<T, R>;
 
   constructor(parseFn: ParseFn<T, R>) {
     super();
