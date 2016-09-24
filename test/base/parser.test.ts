@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 import 'mocha';
-import {State, Parser, createParser} from '../../lib';
+import {State, Parser, createParser, Either} from '../../lib';
+import {ParserError} from '../../lib/base/parserError';
 
 const point = Parser.point;
 
@@ -18,7 +19,9 @@ describe('Parser', () => {
       });
       const state = newParser.parse(new State('', 0));
 
-      expect(state.result).to.eq(13);
+      state.onRight(state =>
+        expect(state.result).to.eq(13)
+      );
     });
 
     it('should change result to string', () => {
@@ -27,7 +30,9 @@ describe('Parser', () => {
       });
       const state = newParser.parse(new State('', 0));
 
-      expect(state.result).to.eql('12-t');
+      state.onRight(state =>
+        expect(state.result).to.eql('12-t')
+      );
     });
 
     it('should keep other state parameters', () => {
@@ -39,20 +44,41 @@ describe('Parser', () => {
       });
       const state = newParser.parse(new State(text, 0, row, col));
 
-      expect(state.str).to.eql(text);
-      expect(state.row).to.eql(row);
-      expect(state.col).to.eql(col);
+      state.onRight(state => {
+        expect(state.str).to.eql(text);
+        expect(state.row).to.eql(row);
+        expect(state.col).to.eql(col);
+      });
     });
 
     it('should use custom parser', () => {
       const expectedState = new State('ala', 0, 10, 10);
       const newParser = parser.flatMap(() => {
-        return createParser(() => expectedState)
+        return createParser(() => Either.point(expectedState))
       });
       const state = newParser.parse(new State('', 0));
 
-      expect(state).to.be.eql(expectedState);
-    })
+      state.onRight(state => {
+        expect(state).to.be.eql(expectedState);
+      });
+    });
+
+    it('should not map failed parsing result', () => {
+      const newParser: Parser<any, any> = createParser((state) =>
+        Either.left(
+          new ParserError('error', state)
+        )
+      ).flatMap(n =>
+        createParser(() =>
+          Either.point(
+            State.point(10)
+          )
+        )
+      );
+      const result = newParser.parse(State.point(null));
+
+      expect(result.isLeft()).to.eql(true);
+    });
   });
 
   describe('map', () => {
@@ -66,14 +92,18 @@ describe('Parser', () => {
       const newParser = parser.map(n => n + 1);
       const state = newParser.parse(new State('', 0));
 
-      expect(state.result).to.eq(13);
+      state.onRight(state =>
+        expect(state.result).to.eq(13)
+      );
     });
 
     it('should change result to string', () => {
       const newParser = parser.map(n => n + '-t');
       const state = newParser.parse(new State('', 0));
 
-      expect(state.result).to.eql('12-t');
+      state.onRight(state =>
+        expect(state.result).to.eql('12-t')
+      );
     });
 
     it('should keep other state parameters', () => {
@@ -83,9 +113,22 @@ describe('Parser', () => {
       const newParser = parser.map(n => n + 1);
       const state = newParser.parse(new State(text, 0, row, col));
 
-      expect(state.str).to.eql(text);
-      expect(state.row).to.eql(row);
-      expect(state.col).to.eql(col);
+      state.onRight(state => {
+        expect(state.str).to.eql(text);
+        expect(state.row).to.eql(row);
+        expect(state.col).to.eql(col);
+      });
+    });
+
+    it('should not map failed parsing result', () => {
+      const newParser: Parser<any, any> = createParser((state) =>
+        Either.left(
+          new ParserError('error', state)
+        )
+      ).map(() => 10);
+      const result = newParser.parse(State.point(null));
+
+      expect(result.isLeft()).to.eql(true);
     });
   });
 
@@ -100,10 +143,12 @@ describe('Parser', () => {
 
       const resultState = parser.parse(inputState);
 
-      expect(resultState.str).to.eql(text);
-      expect(resultState.row).to.eql(row);
-      expect(resultState.col).to.eql(col);
-      expect(resultState.result.a).to.eql(result.a);
+      resultState.onRight(resultState => {
+        expect(resultState.str).to.eql(text);
+        expect(resultState.row).to.eql(row);
+        expect(resultState.col).to.eql(col);
+        expect(resultState.result.a).to.eql(result.a);
+      });
     });
   });
 });

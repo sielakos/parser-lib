@@ -1,15 +1,21 @@
 import {State} from './state';
+import {Either} from './either';
+import {ParserError} from './parserError';
 
-export type ParseFn<T, R> = (state: State<T>) => State<R>;
+export type ParseFn<T, R> = (state: State<T>) => Either<ParserError<any>, State<R>>;
 
 export abstract class Parser<T, R> {
-  abstract parse(state: State<T>): State<R> 
+  abstract parse(state: State<T>): Either<ParserError<any>, State<R>>
 
   flatMap<E>(fn: (input: R) => Parser<R, E>): Parser<T, E> {
-    return createParser((state: State<T>) => {
+    return createParser<T, E>((state: State<T>) => {
       let state2 = this.parse(state);
 
-      return fn(state2.result).parse(state2);
+      return state2
+        .flatMap(input =>
+          fn(input.result)
+            .parse(input)
+        );
     });
   }
 
@@ -19,7 +25,7 @@ export abstract class Parser<T, R> {
 
   static point<R>(value: R): Parser<any, R> {
     return createParser((state: State<any>) => {
-      return state.map(() => value);
+      return Either.point(state.map(() => value));
     });
   }
 }
@@ -37,7 +43,7 @@ class FunctionParser<T, R> extends Parser<T, R> {
     this.parseFn = parseFn;
   }
 
-  parse(state: State<T>): State<R> {
+  parse(state: State<T>): Either<ParserError<any>, State<R>> {
     return this.parseFn(state);
   }
 }

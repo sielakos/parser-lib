@@ -1,5 +1,3 @@
-import {Either} from './either';
-
 export class State<T> {
   row: number;
   col: number;
