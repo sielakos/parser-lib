@@ -1,42 +1,59 @@
-export class Either<L, R> {
-  public left: L | null;
-  public right: R | null;
-
-  constructor(left: L | null, right: R | null) {
-    this.left = left;
-    this.right = right;
-  }
+export abstract class Either<L, R> {
+  abstract isRight(): this is Right<R>;
 
   static point<R>(value: R): Either<any, R> {
-    return new Either(null, value);
+    return new Right(value);
   }
 
   static left<L>(error: L): Either<L, any> {
-    return new Either(error, null);
+    return new Left(error);
   }
 
-  isRight(): boolean {
-    return this.right !== null;
-  }
-
-  isLeft(): boolean {
+  isLeft(): this is Left<L> {
     return !this.isRight();
   }
 
-  flatMap<T>(fn: (input: R) => Either<L, T>): Either<L, T> {
+  private transform<L2, R2>(onRight: (value: R) => Either<any, R2>,
+                    onLeft: (value: L) => Either<L2, any>): Either<L2, R2> {
     if (this.isRight()) {
-      return fn(this.right);
+      return onRight(this.right);
     }
 
-    return Either.left<L>(this.left);
+    if (this.isLeft()) {
+      return onLeft(this.left);
+    }
+
+    throw new Error('Unknown subclass of Either');
+  }
+
+  onRight(fn: (input: R) => any) {
+    if (this.isRight()) {
+      fn(this.right);
+    }
+  }
+
+  onLeft(fn: (input: L) => any) {
+    if (this.isLeft()) {
+      fn(this.left);
+    }
+  }
+
+  flatMap<T>(fn: (input: R) => Either<L, T>): Either<L, T> {
+    return this.transform(
+      fn,
+      left => Either.left<L>(left)
+    );
   }
 
   map<T>(fn: (input: R) => T): Either<L, T> {
-    return this.flatMap(input => Either.point(fn(this.right)));
+    return this.flatMap(input => Either.point(fn(input)));
   }
 
   swap(): Either<R, L> {
-    return new Either(this.right, this.left);
+    return this.transform(
+      right => Either.left(right),
+      left => Either.point(left)
+    );
   }
 
   catchError(fn: (input: L) => Either<L, R>): Either<L, R> {
@@ -45,5 +62,41 @@ export class Either<L, R> {
     }
 
     return this;
+  }
+}
+
+export class Right<R> extends Either<any, R> {
+  private value: R;
+
+  constructor(right: R) {
+    super();
+
+    this.value = right;
+  }
+
+  isRight(): this is Right<R> {
+    return true;
+  }
+
+  get right(): R {
+    return this.value;
+  }
+}
+
+export class Left<L> extends Either<L, any> {
+  private value: L;
+
+  constructor(left: L) {
+    super();
+
+    this.value = left;
+  }
+
+  isRight(): this is Right<any> {
+    return false;
+  }
+
+  get left(): L {
+    return this.value;
   }
 }

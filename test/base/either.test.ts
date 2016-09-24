@@ -8,7 +8,10 @@ describe('Either', () => {
       const either = Either.point(15);
 
       expect(either.isRight()).to.eql(true);
-      expect(either.right).to.eql(15);
+
+      either.onRight(value =>
+        expect(value).to.eql(15)
+      );
     });
   });
 
@@ -17,27 +20,29 @@ describe('Either', () => {
       const either = Either.left('error');
 
       expect(either.isLeft()).to.eql(true);
-      expect(either.left).to.eql('error');
+      either.onLeft(value =>
+        expect(value).to.eql('error')
+      );
     });
   });
 
   describe('isRight', () => {
     it('should return true when instance is right', () => {
-      expect(new Either(null, 15).isRight()).to.eql(true);
+      expect(Either.point(15).isRight()).to.eql(true);
     });
 
     it('should return false when instance is left', () => {
-      expect(new Either(15, null).isRight()).to.eql(false);
+      expect(Either.left(15).isRight()).to.eql(false);
     });
   });
 
   describe('isLeft', () => {
     it('should return false when instance is right', () => {
-      expect(new Either(null, 15).isLeft()).to.eql(false);
+      expect(Either.point(15).isLeft()).to.eql(false);
     });
 
     it('should return true when instance is left', () => {
-      expect(new Either(15, null).isLeft()).to.eql(true);
+      expect(Either.left(15).isLeft()).to.eql(true);
     });
   });
 
@@ -48,7 +53,10 @@ describe('Either', () => {
         .flatMap(n => Either.point(n + 5));
 
       expect(either.isRight()).to.eql(true);
-      expect(either.right).to.eql(10);
+
+      either.onRight(value =>
+        expect(value).to.eql(10)
+      );
     });
 
     it('should map value to left when instance is right', () => {
@@ -57,7 +65,10 @@ describe('Either', () => {
         .flatMap(n => Either.left(n + 5));
 
       expect(either.isLeft()).to.eql(true);
-      expect(either.left).to.eql(10);
+
+      either.onLeft(value =>
+        expect(value).to.eql(10)
+      );
     });
 
     it('should do nothing when instance is left', () => {
@@ -66,7 +77,9 @@ describe('Either', () => {
         .flatMap(n => Either.point(n + 5));
 
       expect(either.isLeft()).to.eql(true);
-      expect(either.left).to.eql('error');
+      either.onLeft(value =>
+        expect(value).to.eql('error')
+      );
     });
   });
 
@@ -77,7 +90,9 @@ describe('Either', () => {
         .map(n => n * 2);
 
       expect(either.isRight()).to.eql(true);
-      expect(either.right).to.eql(14);
+      either.onRight(value =>
+        expect(value).to.eql(14)
+      );
     });
 
     it('should do nothing to left instance', () => {
@@ -86,7 +101,9 @@ describe('Either', () => {
         .map(n => n * 2);
 
       expect(either.isLeft()).to.eql(true);
-      expect(either.left).to.eql(7);
+      either.onLeft(value =>
+        expect(value).to.eql(7)
+      );
     });
   });
 
@@ -97,7 +114,9 @@ describe('Either', () => {
         .swap();
 
       expect(either.isRight()).to.eql(true);
-      expect(either.right).to.eql(5);
+      either.onRight(value =>
+        expect(value).to.eql(5)
+      );
     });
 
     it('should change right to left', () => {
@@ -106,7 +125,9 @@ describe('Either', () => {
         .swap();
 
       expect(either.isLeft()).to.eql(true);
-      expect(either.left).to.eql(5);
+      either.onLeft(value =>
+        expect(value).to.eql(5)
+      );
     });
   });
 
@@ -117,7 +138,9 @@ describe('Either', () => {
         .catchError(n => Either.point(n * 3));
 
       expect(either.isRight()).to.eql(true);
-      expect(either.right).to.eql(15);
+      either.onRight(value =>
+        expect(value).to.eql(15)
+      );
     });
 
     it('should do nothing to right instance', () => {
@@ -126,7 +149,33 @@ describe('Either', () => {
         .catchError(n => Either.point(n * 3));
 
       expect(either.isRight()).to.eql(true);
-      expect(either.right).to.eql(8);
+      either.onLeft(value =>
+        expect(value).to.eql(8)
+      );
+    });
+  });
+
+  describe('onRight', () => {
+    it('should be called when instance is right with correct value', () => {
+      let value: number | undefined;
+
+      Either
+        .point(15)
+        .onRight(_value => value = _value);
+
+      expect(value).to.eql(15);
+    });
+  });
+
+  describe('onLeft', () => {
+    it('should be called when instance is left with correct value', () => {
+      let value: number | undefined;
+
+      Either
+        .left(15)
+        .onLeft(_value => value = _value);
+
+      expect(value).to.eql(15);
     });
   });
 });

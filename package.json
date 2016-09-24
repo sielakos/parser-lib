@@ -5,7 +5,6 @@
   "main": "dist/lib/index.js",
   "typings": "dist/lib/index.d.ts",
   "scripts": {
-    "install": "./node_modules/.bin/typings install",
     "prepublish": "npm run compile",
     "compile": "rm -rf dist; ./node_modules/.bin/tsc",
     "test": "npm run compile; ./node_modules/.bin/mocha dist/test/*"
@@ -13,10 +12,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/chai": "^3.4.33",
+    "@types/mocha": "^2.2.32",
     "chai": "^3.5.0",
     "mocha": "^3.0.2",
     "ts-helpers": "^1.1.1",
-    "typescript": "^2.0.3",
-    "typings": "^1.4.0"
+    "typescript": "^2.0.3"
   }
 }
