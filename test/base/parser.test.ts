@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import 'mocha';
-import {State, Parser, createParser, Either} from '../../lib';
+import {State, Parser, createParser, Either, symbol} from '../../lib';
 import {ParserError} from '../../lib/base/parserError';
 
 const point = Parser.point;
@@ -149,6 +149,21 @@ describe('Parser', () => {
         expect(resultState.col).to.eql(col);
         expect(resultState.result.a).to.eql(result.a);
       });
+    });
+  });
+
+  describe('parseText', () => {
+    it('should parse new state with given text', () => {
+      const parser = symbol('karol');
+      const result = parser.parseText('karol');
+      const value = result
+        .getOrElse(
+          State.point('dupa')
+        )
+        .result;
+
+      expect(result.isRight()).to.eql(true);
+      expect(value).to.eql('karol');
     });
   });
 });

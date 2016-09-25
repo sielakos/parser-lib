@@ -58,4 +58,10 @@ describe('State', () => {
       expect(state.col).to.eql(0);
     });
   });
+
+  describe('fromText', () => {
+    it('should create new state with given text', () => {
+      expect(State.fromText('alina').str).to.eql('alina');
+    });
+  });
 });

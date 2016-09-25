@@ -7,6 +7,10 @@ export type ParseFn<T, R> = (state: State<T>) => Either<ParserError<any>, State<
 export abstract class Parser<T, R> {
   abstract parse(state: State<T>): Either<ParserError<any>, State<R>>
 
+  parseText(text: string): Either<ParserError<any>, State<R>> {
+    return this.parse(State.fromText(text));
+  }
+
   flatMap<E>(fn: (input: R) => Parser<R, E>): Parser<T, E> {
     return createParser<T, E>((state: State<T>) => {
       let state2 = this.parse(state);

@@ -33,4 +33,8 @@ export class State<T> {
   static point<T>(result: T): State<T> {
     return new State('', result);
   }
+
+  static fromText(text: string): State<any> {
+    return new State(text, null);
+  }
 }
