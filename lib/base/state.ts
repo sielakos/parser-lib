@@ -1,3 +1,5 @@
+import {calculateStatePositionChange} from '../utils';
+
 export class State<T> {
   row: number;
   col: number;
@@ -9,6 +11,14 @@ export class State<T> {
     this.result = result;
     this.row = row;
     this.col = col;
+  }
+
+  static point<T>(result: T): State<T> {
+    return new State('', result);
+  }
+
+  static fromText(text: string): State<any> {
+    return new State(text, null);
   }
 
   flatMap<R>(fn: (input: T) => State<R>) {
@@ -30,11 +40,30 @@ export class State<T> {
     );
   }
 
-  static point<T>(result: T): State<T> {
-    return new State('', result);
+  changePosition({row = 0, col = 0}: {row?: number, col?: number}): State<T> {
+    return new State(
+      this.str,
+      this.result,
+      this.row + row,
+      col
+    )
   }
 
-  static fromText(text: string): State<any> {
-    return new State(text, null);
+  consumeText(text: string): State<string> {
+    return this
+      .changePosition(
+        calculateStatePositionChange(text)
+      )
+      .cutStart(text.length)
+      .map(() => text);
+  }
+
+  private cutStart(length: number): State<T> {
+    return new State(
+      this.str.substr(length),
+      this.result,
+      this.row,
+      this.col
+    );
   }
 }

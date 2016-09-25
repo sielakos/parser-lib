@@ -15,7 +15,7 @@ describe('State', () => {
       expect(resultState.col).to.eql(45);
     });
 
-    it('should join str, row and col', () => {
+    it('should adjust str, row and col', () => {
       const resultState = new State('y ', 5, 10, 15)
         .flatMap(n => new State('x', n + 5, 11, 45));
 
@@ -62,6 +62,50 @@ describe('State', () => {
   describe('fromText', () => {
     it('should create new state with given text', () => {
       expect(State.fromText('alina').str).to.eql('alina');
+    });
+  });
+
+  describe('changePosition', () => {
+    let newState: State<number>;
+
+    beforeEach(() => {
+      const state = new State('x', 10, 54, 56);
+
+      newState = state.changePosition({row: 5, col: 10});
+    });
+
+    it('should change position state by given row and col', () => {
+      expect(newState.row).to.eql(59);
+      expect(newState.col).to.eql(10);
+    });
+
+    it('should not change str and result', () => {
+      expect(newState.result).to.eql(10);
+      expect(newState.str).to.eql('x');
+    });
+  });
+
+  describe('consumeText', () => {
+    const text = 'alina\nma';
+    let state: State<string>;
+
+    beforeEach(() => {
+      state = State
+        .fromText('alina\nma kota')
+        .consumeText(text);
+    });
+
+    it('should have given text as result', () => {
+      expect(state.result).to.eql(text);
+    });
+
+    it('should have col and row adjusted', () => {
+      expect(state.col).to.eql(2);
+      expect(state.row).to.eql(1);
+    });
+
+    it('should have str cut by length of given text', () => {
+      expect(state.str).to.eql(' kota');
     });
   });
 });
