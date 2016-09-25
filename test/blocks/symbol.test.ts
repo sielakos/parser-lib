@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import 'mocha';
-import {symbol, State} from '../../lib';
+import {symbol} from '../../lib';
 
 describe('symbol', () => {
   const parser = symbol('x11');
