@@ -178,4 +178,28 @@ describe('Either', () => {
       expect(value).to.eql(15);
     });
   });
+
+  describe('getOrElse', () => {
+    it('should return right value', () => {
+      expect(
+        Either
+          .point(15)
+          .getOrElse(13)
+      ).to.eql(15);
+    });
+
+    it('should return default value', () => {
+      expect(
+        Either
+          .left(15)
+          .getOrElse(13)
+      ).to.eql(13);
+    });
+  });
+
+  describe('right', () => {
+    it('should be alias for Either.point', () => {
+      expect(Either.right === Either.point).to.eql(true);
+    });
+  });
 });

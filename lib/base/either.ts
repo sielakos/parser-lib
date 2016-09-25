@@ -5,6 +5,8 @@ export abstract class Either<L, R> {
     return new Right(value);
   }
 
+  static right = Either.point;
+
   static left<L>(error: L): Either<L, any> {
     return new Left(error);
   }
@@ -62,6 +64,14 @@ export abstract class Either<L, R> {
     }
 
     return this;
+  }
+
+  getOrElse(defaultValue: R): R {
+    if (this.isRight()) {
+      return this.right;
+    }
+
+    return defaultValue;
   }
 }
 
