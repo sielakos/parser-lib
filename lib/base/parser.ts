@@ -37,7 +37,7 @@ export abstract class Parser<T, R> {
     });
   }
 
-  orElse(fn: (error: ParserError<any>) => Parser<R, R>): Parser<T, R> {
+  orElse(fn: (error: ParserError<any>) => Parser<T, R>): Parser<T, R> {
     return createParser<T, R>((state: State<T>) => {
       let state2 = this.parse(state);
 
