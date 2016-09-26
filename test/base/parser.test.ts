@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import 'mocha';
-import {State, Parser, createParser, Either, symbol} from '../../lib';
+import {State, Parser, createParser, Either, symbol, number} from '../../lib';
 import {ParserError} from '../../lib/base/parserError';
 
 const point = Parser.point;
@@ -164,6 +164,94 @@ describe('Parser', () => {
 
       expect(result.isRight()).to.eql(true);
       expect(value).to.eql('karol');
+    });
+  });
+
+  describe('fail', () => {
+    it('should produce parser that fails with given message', () => {
+      const msg = 'fail';
+      const parser = Parser.fail(msg);
+
+      expect(
+        parser
+          .parseText('')
+          .swap()
+          .map(error => error.msg)
+          .getOrElse('')
+      ).to.eql(msg);
+    });
+  });
+
+  describe('orElse', () => {
+    const parser = symbol('ala')
+      .orElse(() => symbol('beata'));
+
+    it('should return result of first parsers if it works', () => {
+      expect(
+        parser
+          .parseText('ala')
+          .map(state => state.result)
+          .getOrElse('')
+      ).to.eql('ala');
+    });
+
+    it('should fail if both parser fail', () => {
+       expect(
+         parser
+           .parseText('dd2')
+           .isLeft()
+       ).to.eql(true);
+    });
+
+    it('should catch parser error and use new parser to try parsing the state again', () => {
+      expect(
+        parser
+          .parseText('beata')
+          .map(state => state.result)
+          .getOrElse('')
+      ).to.eql('beata');
+    });
+  });
+
+  describe('filter', () => {
+    const parser = number.filter(n => n < 100 && n >= 0);
+
+    it('should pass when condition is met', () => {
+       expect(
+         parser
+           .parseText('88')
+           .map(state => state.result)
+           .getOrElse(0)
+       ).to.eql(88);
+    });
+
+    it('should fail when condition is not met', () => {
+      expect(
+        parser
+          .parseText('868')
+          .isLeft()
+      ).to.eql(true);
+    });
+
+    it('should fail with given message', () => {
+      const msg = 'fail';
+
+      expect(
+        parser
+          .filter(() => false, msg)
+          .parseText('86')
+          .swap()
+          .map(error => error.msg)
+          .getOrElse('')
+      ).to.eql(msg);
+    });
+
+    it('should fail when base parser fails', () => {
+      expect(
+        parser
+          .parseText('d8')
+          .isLeft()
+      ).to.eql(true);
     });
   });
 });

@@ -131,7 +131,7 @@ describe('Either', () => {
     });
   });
 
-  describe('catchError', () => {
+  describe('orElse', () => {
     it('should map left instance to new either', () => {
       const either = Either
         .left(5)

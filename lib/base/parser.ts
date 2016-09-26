@@ -27,6 +27,38 @@ export abstract class Parser<T, R> {
     return this.flatMap(input => Parser.point(fn(input)));
   }
 
+  filter(predicate: (input: R) => boolean, msg: string = 'predicate failed'): Parser<T, R> {
+    return this.flatMap(input => {
+      if (predicate(input)) {
+        return Parser.point(input);
+      }
+
+      return Parser.fail<R, R>(msg);
+    });
+  }
+
+  orElse(fn: (error: ParserError<any>) => Parser<R, R>): Parser<T, R> {
+    return createParser<T, R>((state: State<T>) => {
+      let state2 = this.parse(state);
+
+      if (state2.isLeft()) {
+        return state2
+          .swap()
+          .flatMap(error =>
+            fn(error).parse(error.state)
+          );
+      }
+
+      return state2;
+    });
+  }
+
+  static fail<T, R>(error: string): Parser<T, R> {
+    return createParser<T, R>(state => {
+      return Either.left(new ParserError(error, state));
+    });
+  }
+
   static point<R>(value: R): Parser<any, R> {
     return createParser((state: State<any>) => {
       return Either.point(state.map(() => value));
