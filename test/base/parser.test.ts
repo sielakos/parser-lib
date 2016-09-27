@@ -254,4 +254,18 @@ describe('Parser', () => {
       ).to.eql(true);
     });
   });
+
+  describe('changeErrorMessage', () => {
+    it('should change error message', () => {
+      expect(
+        Parser
+          .fail('x')
+          .changeErrorMessage('y')
+          .parseText('')
+          .swap()
+          .map(error => error.msg)
+          .getOrElse('')
+      ).to.eql('y');
+    });
+  });
 });

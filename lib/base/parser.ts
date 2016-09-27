@@ -53,6 +53,12 @@ export abstract class Parser<T, R> {
     });
   }
 
+  changeErrorMessage(msg: string): Parser<T, R> {
+    return this.orElse(error =>
+      Parser.fail<T, R>(msg)
+    );
+  }
+
   static fail<T, R>(error: string): Parser<T, R> {
     return createParser<T, R>(state => {
       return Either.left(new ParserError(error, state));
