@@ -45,8 +45,8 @@ export class State<T> {
       this.str,
       this.result,
       this.row + row,
-      col
-    )
+      row > 0 ? col : this.col + col
+    );
   }
 
   consumeText(text: string): State<string> {

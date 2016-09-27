@@ -59,6 +59,10 @@ export abstract class Parser<T, R> {
     );
   }
 
+  next<E>(parser: Parser<R, E>): Parser<T, E> {
+    return this.flatMap(() => parser);
+  }
+
   static fail<T, R>(error: string): Parser<T, R> {
     return createParser<T, R>(state => {
       return Either.left(new ParserError(error, state));

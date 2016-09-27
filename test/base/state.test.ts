@@ -83,6 +83,14 @@ describe('State', () => {
       expect(newState.result).to.eql(10);
       expect(newState.str).to.eql('x');
     });
+
+    it('should not reset col if row is 0', () => {
+      const state = new State('x', 10, 54, 56)
+        .changePosition({col: 4});
+
+      expect(state.col).to.eql(60);
+      expect(state.row).to.eql(54);
+    });
   });
 
   describe('consumeText', () => {

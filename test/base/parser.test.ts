@@ -268,4 +268,36 @@ describe('Parser', () => {
       ).to.eql('y');
     });
   });
+
+  describe('next', () => {
+    const parser = symbol('a')
+      .next(number);
+
+    it('should run parsers in sequence', () => {
+      const result = parser.parseText('a121n');
+
+      expect(result.isRight()).to.eql(true);
+
+      result.onRight(state => {
+        expect(state.str).to.eql('n');
+        expect(state.row).to.eql(0);
+        expect(state.col).to.eql(4);
+        expect(state.result).to.eql(121);
+      });
+    });
+
+    it('should fail if any of parsers fails', () => {
+      expect(
+        parser
+          .parseText('12')
+          .isLeft()
+      ).to.eql(true);
+
+      expect(
+        parser
+          .parseText('aa12')
+          .isLeft()
+      ).to.eql(true);
+    });
+  });
 });
