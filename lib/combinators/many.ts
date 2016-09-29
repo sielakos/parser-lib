@@ -3,7 +3,7 @@ import {Parser, createParser, State, ParserError, Either} from '../base';
 export function many<R>(parser: Parser<R, R>): Parser<R, Array<R>> {
   return createParser((state: State<R>) => {
     let results: Either<ParserError<any>, State<Array<R>>> = Either.point(
-      State.point([])
+      state.map(() => [])
     );
     let currentState = parser.parse(state);
 

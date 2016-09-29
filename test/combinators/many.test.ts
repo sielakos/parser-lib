@@ -15,11 +15,13 @@ describe('many', () => {
     const result = parser.parseText(input);
 
     expect(result.isRight());
-    expect(
-      result
-        .map(state => state.result)
-        .getOrElse([])
-    ).to.deep.equal([1, 2, 3]);
+
+    result.onRight(({result, row, col, str}) => {
+      expect(result).to.deep.equal([1, 2, 3]);
+      expect(row).to.eql(0);
+      expect(col).to.eql(6);
+      expect(str).to.eql('');
+    });
   });
 
   it('should produce empty list when child parser fails', () => {
@@ -27,10 +29,12 @@ describe('many', () => {
     const result = parser.parseText(input);
 
     expect(result.isRight());
-    expect(
-      result
-        .map(state => state.result)
-        .getOrElse([1])
-    ).to.deep.equal([]);
+
+    result.onRight(({result, row, col, str}) => {
+      expect(result).to.deep.equal([]);
+      expect(row).to.eql(0);
+      expect(col).to.eql(0);
+      expect(str).to.eql('dupa');
+    });
   })
 });
