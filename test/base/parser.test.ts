@@ -300,4 +300,19 @@ describe('Parser', () => {
       ).to.eql(true);
     });
   });
+
+  describe('failWithParserError', () => {
+    it('should fail with given error', () => {
+      const parser = Parser.failWithParserError(
+        new ParserError('er', State.fromText('d'))
+      );
+      const result = parser.parseText('ela');
+
+      expect(result.isLeft()).to.eql(true);
+      result.onLeft((error) => {
+        expect(error.state.str).to.eql('d');
+        expect(error.msg).to.eql('er');
+      });
+    });
+  });
 });

@@ -74,6 +74,12 @@ export abstract class Parser<T, R> {
       return Either.point(state.map(() => value));
     });
   }
+
+  static failWithParserError<T, R>(error: ParserError<any>): Parser<T, R> {
+    return createParser<T, R>(() =>
+      Either.left(error)
+    );
+  }
 }
 
 export function createParser<T, R>(parseFn: ParseFn<T, R>): Parser<T, R> {
