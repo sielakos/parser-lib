@@ -60,7 +60,7 @@ describe('chainLeft', () => {
     expect(result.isLeft()).to.eql(true);
 
     result.onLeft((error) => {
-      expect(error.msg).to.eql('Could not parse expression');
+      expect(error.msg).to.contain('number');
       expect(error.state.str).to.eql('d');
       expect(error.state.col).to.eql(0);
       expect(error.state.row).to.eql(0);
