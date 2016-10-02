@@ -34,7 +34,7 @@ describe('liftErrorToState', () => {
 
       state.result.onLeft((error) => {
         expect(error.state).to.deep.equal(State.fromText('Dupa'));
-        expect(error.msg).to.eql(`Couldn't parse symbol 'Falin'`);
+        expect(error.msg).to.contain('Falin');
       });
     });
   });

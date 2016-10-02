@@ -1,5 +1,12 @@
 import {Parser, createParser, State, ParserError, Either} from '../base';
 
+export function many1<R>(parser: Parser<R, R>): Parser<R, Array<R>> {
+  return parser.flatMap(value => {
+    return many(parser)
+      .map(values => [value].concat(values));
+  });
+}
+
 export function many<R>(parser: Parser<R, R>): Parser<R, Array<R>> {
   return createParser((state: State<R>) => {
     let results: Either<ParserError<any>, State<Array<R>>> = Either.point(

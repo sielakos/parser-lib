@@ -24,7 +24,7 @@ describe('symbol', () => {
     expect(result.isLeft()).to.eql(true);
 
     result.onLeft(error => {
-      expect(error.msg).to.eql(`Couldn't parse symbol 'x11'`);
+      expect(error.msg).to.contain('x11');
       expect(error.state.str).to.eql('x12x2');
       expect(error.state.row).to.eql(0);
       expect(error.state.col).to.eql(0);

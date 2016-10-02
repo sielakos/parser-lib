@@ -9,6 +9,6 @@ export function symbol(symbol: string): Parser<any, string> {
       return Either.point(newState);
     }
 
-    return Either.left(new ParserError(`Couldn't parse symbol '${symbol}'`, state));
+    return Either.left(new ParserError(`Expected '${symbol}'`, state));
   });
 }
