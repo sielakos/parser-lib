@@ -6,3 +6,4 @@ export * from './optional';
 export * from './separatedBy';
 export * from './liftErrorToState';
 export * from './chain';
+export * from './notFallowedBy';
