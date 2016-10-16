@@ -8,3 +8,4 @@ export * from './liftErrorToState';
 export * from './chain';
 export * from './notFallowedBy';
 export * from './lazy';
+export * from './operator';

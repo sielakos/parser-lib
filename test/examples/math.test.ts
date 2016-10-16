@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import 'mocha';
-import {between, keyword, number, Parser, or, lazy, chainLeft, chainRight} from '../../lib';
+import {between, keyword, number, Parser, or, lazy, chainLeft, chainRight, operator} from '../../lib';
 
 describe('math parser example', () => {
   let parser: Parser<any, number>;
@@ -19,32 +19,19 @@ describe('math parser example', () => {
     
     const lvl1: Parser<any, number> = chainRight(
       atom,
-      keyword('^', false)
-        .map(() => Math.pow)
+      operator('^', Math.pow)
     );
     
     const lvl2Op = or(
-      keyword('*', false)
-        .map(() =>
-          (a: number, b: number) => a * b
-        ),
-      keyword('/', false)
-        .map(() =>
-          (a: number, b: number) => a / b
-        )
+      operator('*', (a: number, b: number) => a * b),
+      operator('/', (a: number, b: number) => a / b)
     );
     
     const lvl2: Parser<any, number> = chainLeft(lvl1, lvl2Op);
     
     const lvl3Op = or(
-      keyword('+', false)
-        .map(() =>
-          (a: number, b: number) => a + b
-        ),
-      keyword('-', false)
-        .map(() =>
-          (a: number, b: number) => a - b
-        )
+      operator('+', (a: number, b: number) => a + b),
+      operator('-', (a: number, b: number) => a - b)
     );
     
     const lvl3 = chainLeft(lvl2, lvl3Op);
