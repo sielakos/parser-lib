@@ -25,4 +25,8 @@ describe('keyword', () => {
   it('should fail when word does not match', () => {
     expect(parser.parseText('ata').isLeft()).to.eql(true);
   });
+  
+  it('should not fail if whitespace is missing and it is not required', () => {
+    expect(keyword('ala', false).parseText('ala').isRight()).to.eql(true);
+  });
 });
