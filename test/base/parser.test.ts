@@ -315,4 +315,43 @@ describe('Parser', () => {
       });
     });
   });
+  
+  describe('tap', () => {
+    it('should not change parser result', () => {
+      const parser = symbol('a')
+        .tap((state, result) => state);
+      const result = parser.parseText('ab');
+      
+      expect(result.isRight()).to.eql(true);
+      
+      result.onRight(state => {
+        expect(state.str).to.eql('b');
+        expect(state.col).to.eql(1);
+        expect(state.row).to.eql(0);
+        expect(state.result).to.eql('a');
+      });
+    });
+  
+    it('should pass initial state and result to tap function', (done) => {
+      const parser = symbol('a')
+        .tap((state, result) => {
+          expect(result.isRight()).to.eql(true);
+  
+          result.onRight(state => {
+            expect(state.str).to.eql('b');
+            expect(state.col).to.eql(1);
+            expect(state.row).to.eql(0);
+            expect(state.result).to.eql('a');
+          });
+          
+          expect(state.str).to.eql('ab');
+          expect(state.col).to.eql(0);
+          expect(state.row).to.eql(0);
+          
+          done();
+        });
+      
+      parser.parseText('ab');
+    });
+  });
 });
