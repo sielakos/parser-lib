@@ -9,3 +9,4 @@ export * from './chain';
 export * from './notFallowedBy';
 export * from './lazy';
 export * from './operator';
+export * from './withDefault';

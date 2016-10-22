@@ -10,8 +10,12 @@
     "compile": "./node_modules/.bin/tsc",
     "test": "./node_modules/.bin/mocha --require ts-node/register test/**/*.test.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sielakos/parser-lib.git"
+  },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/chai": "^3.4.33",
     "@types/mocha": "^2.2.32",
