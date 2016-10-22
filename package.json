@@ -5,7 +5,7 @@
   "main": "dist/lib/index.js",
   "typings": "dist/lib/index.d.ts",
   "scripts": {
-    "postinstall": "npm run compile",
+    "prepublish": "npm run compile",
     "clean": "rm -rf dist",
     "compile": "./node_modules/.bin/tsc",
     "test": "./node_modules/.bin/mocha --require ts-node/register test/**/*.test.ts"
