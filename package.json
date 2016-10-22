@@ -1,6 +1,6 @@
 {
   "name": "parser-lib",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/lib/index.js",
   "typings": "dist/lib/index.d.ts",
