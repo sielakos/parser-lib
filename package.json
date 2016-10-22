@@ -1,13 +1,13 @@
 {
   "name": "parser-lib",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/lib/index.js",
   "typings": "dist/lib/index.d.ts",
   "scripts": {
     "prepublish": "npm run compile",
     "clean": "rm -rf dist",
-    "compile": "npm run clean; ./node_modules/.bin/tsc",
+    "compile": "./node_modules/.bin/tsc",
     "test": "./node_modules/.bin/mocha --require ts-node/register test/**/*.test.ts"
   },
   "author": "",
