@@ -45,7 +45,7 @@ export abstract class Parser<T, R> {
         return state2
           .swap()
           .flatMap(error =>
-            fn(error).parse(error.state)
+            fn(error).parse(state)
           );
       }
 

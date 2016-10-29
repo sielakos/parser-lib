@@ -186,6 +186,23 @@ describe('Parser', () => {
     const parser = symbol('ala')
       .orElse(() => symbol('beata'));
 
+    it('should get state before fail', () => {
+      const parser = symbol('a')
+        .next(symbol('ala'))
+        .orElse(() => symbol('alan'));
+
+      const result = parser.parseText('alan');
+
+      expect(result.isRight()).to.eql(true);
+
+      result.onRight(state => {
+        expect(state.result).to.eql('alan');
+        expect(state.str).to.eql('');
+        expect(state.col).to.eql(4);
+        expect(state.row).to.eql(0);
+      });
+    });
+
     it('should return result of first parsers if it works', () => {
       expect(
         parser
