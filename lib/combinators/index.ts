@@ -10,3 +10,5 @@ export * from './notFallowedBy';
 export * from './lazy';
 export * from './operator';
 export * from './withDefault';
+export * from './sequence';
+export * from './namedSequence';
