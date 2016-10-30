@@ -1,10 +1,10 @@
 #Parser Lib
 
-[![Build Status](https://travis-ci.org/sielakos/parser-lib.svg?branch=master)](https://travis-ci.org/sielakos/parser-lib)
-
 Goal of this library is to create enable easy and type safe creation of
 parsers runable in all javascript environments. 
 It is inspired by [haskell parsec](https://hackage.haskell.org/package/parsec) library.
+
+[![Build Status](https://travis-ci.org/sielakos/parser-lib.svg?branch=master)](https://travis-ci.org/sielakos/parser-lib)
 
 ##Examples
 
