@@ -5,6 +5,9 @@ parsers runable in all javascript environments.
 It is inspired by [haskell parsec](https://hackage.haskell.org/package/parsec) library.
 
 [![Build Status](https://travis-ci.org/sielakos/parser-lib.svg?branch=master)](https://travis-ci.org/sielakos/parser-lib)
+[![dependencies Status](https://david-dm.org/sielakos/parser-lib/status.svg)](https://david-dm.org/sielakos/parser-lib)
+[![devDependencies Status](https://david-dm.org/sielakos/parser-lib/dev-status.svg)](https://david-dm.org/sielakos/parser-lib?type=dev)
+[![npm](https://img.shields.io/npm/v/parser-lib.svg)](https://www.npmjs.com/package/parser-lib)
 
 ##Examples
 
