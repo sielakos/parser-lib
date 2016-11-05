@@ -3,58 +3,133 @@ import 'mocha';
 import {separatedBy, symbol, number} from '../../lib';
 
 describe('separatedBy', () => {
-  const parser = separatedBy(number, symbol(','));
+  describe('with string as separator', () => {
+    const parser = separatedBy(number, ',');
 
-  it('should produce list of values on match', () => {
-    const result = parser.parseText('1,4,5,7d');
+    it('should produce list of values on match', () => {
+      const input = '1,4 ,5, 7 , 6';
+      const result = parser.parseText(input + 'd');
 
-    expect(result.isRight()).to.eql(true);
+      expect(result.isRight()).to.eql(true);
 
-    result.onRight(state => {
-      const expectedValues = [1, 4, 5, 7];
+      result.onRight(state => {
+        const expectedValues = [1, 4, 5, 7, 6];
 
-      expect(state.result).to.deep.equal(expectedValues);
-      expect(state.row).to.eql(0);
-      expect(state.col).to.eql(
-        expectedValues.join(',').length
-      );
-      expect(state.str).to.eql('d');
+        expect(state.result).to.deep.equal(expectedValues);
+        expect(state.row).to.eql(0);
+        expect(state.col).to.eql(input.length);
+        expect(state.str).to.eql('d');
+      });
+    });
+
+    it('should produce list of values on match', () => {
+      const result = parser.parseText('1,4,5,7d');
+
+      expect(result.isRight()).to.eql(true);
+
+      result.onRight(state => {
+        const expectedValues = [1, 4, 5, 7];
+
+        expect(state.result).to.deep.equal(expectedValues);
+        expect(state.row).to.eql(0);
+        expect(state.col).to.eql(
+          expectedValues.join(',').length
+        );
+        expect(state.str).to.eql('d');
+      });
+    });
+
+    it('should produce empty list', () => {
+      const result = parser.parseText('d');
+
+      expect(result.isRight()).to.eql(true);
+
+      result.onRight(state => {
+        const expectedValues = [];
+
+        expect(state.result).to.deep.equal(expectedValues);
+        expect(state.row).to.eql(0);
+        expect(state.col).to.eql(0);
+        expect(state.str).to.eql('d');
+      });
+    });
+
+    it('produce singleton', () => {
+      const result = parser.parseText('1d');
+
+      expect(result.isRight()).to.eql(true);
+
+      result.onRight(state => {
+        const expectedValues = [1];
+
+        expect(state.result).to.deep.equal(expectedValues);
+        expect(state.row).to.eql(0);
+        expect(state.col).to.eql(1);
+        expect(state.str).to.eql('d');
+      });
+    });
+
+    it('should fail if list last element fails', () => {
+      const result = parser.parseText('1,4,5,7,d');
+
+      expect(result.isLeft()).to.eql(true);
     });
   });
 
-  it('should produce empty list', () => {
-    const result = parser.parseText('d');
+  describe('with parser as separator', () => {
+    const parser = separatedBy(number, symbol(','));
 
-    expect(result.isRight()).to.eql(true);
+    it('should produce list of values on match', () => {
+      const result = parser.parseText('1,4,5,7d');
 
-    result.onRight(state => {
-      const expectedValues = [];
+      expect(result.isRight()).to.eql(true);
 
-      expect(state.result).to.deep.equal(expectedValues);
-      expect(state.row).to.eql(0);
-      expect(state.col).to.eql(0);
-      expect(state.str).to.eql('d');
+      result.onRight(state => {
+        const expectedValues = [1, 4, 5, 7];
+
+        expect(state.result).to.deep.equal(expectedValues);
+        expect(state.row).to.eql(0);
+        expect(state.col).to.eql(
+          expectedValues.join(',').length
+        );
+        expect(state.str).to.eql('d');
+      });
     });
-  });
 
-  it('produce singleton', () => {
-    const result = parser.parseText('1d');
+    it('should produce empty list', () => {
+      const result = parser.parseText('d');
 
-    expect(result.isRight()).to.eql(true);
+      expect(result.isRight()).to.eql(true);
 
-    result.onRight(state => {
-      const expectedValues = [1];
+      result.onRight(state => {
+        const expectedValues = [];
 
-      expect(state.result).to.deep.equal(expectedValues);
-      expect(state.row).to.eql(0);
-      expect(state.col).to.eql(1);
-      expect(state.str).to.eql('d');
+        expect(state.result).to.deep.equal(expectedValues);
+        expect(state.row).to.eql(0);
+        expect(state.col).to.eql(0);
+        expect(state.str).to.eql('d');
+      });
     });
-  });
 
-  it('should fail if list last element fails', () => {
-    const result = parser.parseText('1,4,5,7,d');
+    it('produce singleton', () => {
+      const result = parser.parseText('1d');
 
-    expect(result.isLeft()).to.eql(true);
+      expect(result.isRight()).to.eql(true);
+
+      result.onRight(state => {
+        const expectedValues = [1];
+
+        expect(state.result).to.deep.equal(expectedValues);
+        expect(state.row).to.eql(0);
+        expect(state.col).to.eql(1);
+        expect(state.str).to.eql('d');
+      });
+    });
+
+    it('should fail if list last element fails', () => {
+      const result = parser.parseText('1,4,5,7,d');
+
+      expect(result.isLeft()).to.eql(true);
+    });
   });
 });
