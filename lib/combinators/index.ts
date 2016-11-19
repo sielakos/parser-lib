@@ -12,3 +12,4 @@ export * from './operator';
 export * from './withDefault';
 export * from './sequence';
 export * from './namedSequence';
+export * from './withWhitespaces';

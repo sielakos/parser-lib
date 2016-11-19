@@ -66,4 +66,13 @@ export class State<T> {
       this.col
     );
   }
+
+  withPositionFromState<R>(state: State<R>): State<T> {
+    return new State(
+      state.str,
+      this.result,
+      state.row,
+      state.col
+    );
+  }
 }

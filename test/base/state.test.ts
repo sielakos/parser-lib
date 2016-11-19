@@ -116,4 +116,18 @@ describe('State', () => {
       expect(state.str).to.eql(' kota');
     });
   });
+
+  describe('withPositionFromState', () => {
+    it('should take position from other state and leave result intact', () => {
+      const source = new State('s', 12, 101, 23);
+      const result = [1, 2];
+      const newState = new State('d', result, 0, 0)
+        .withPositionFromState(source);
+
+      expect(newState.col).to.eql(source.col);
+      expect(newState.row).to.eql(source.row);
+      expect(newState.str).to.eql(source.str);
+      expect(newState.result).to.eql(result);
+    });
+  });
 });
